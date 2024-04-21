@@ -1,5 +1,7 @@
 use poc_tickets_component::contracts::cairo_loto_tickets::{CairoLotoTickets, ICairoLotoTickets, ICairoLotoTicketsDispatcher, ICairoLotoTicketsDispatcherTrait};
 use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::{TicketsInternalImpl, TicketsInternalTrait,};
+use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::__member_module_total_supply::InternalContractMemberStateTrait as total;
+use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::__member_module_current_supply::InternalContractMemberStateTrait as circ;
 use starknet::{ContractAddress, contract_address_const, deploy_syscall, SyscallResultTrait,};
 
 
@@ -78,6 +80,54 @@ fn test__ticket_value() {
     assert_eq!(amount, TEN_WITH_6_DECIMALS);
 }
 
+#[test]
+fn test__circulating_supply() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+    state.current_supply.write(10);
+
+    let amount = state._circulating_supply();
+    assert_eq!(amount, 10_u256);
+}
+#[test]
+fn test__increase_circulating_supply() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+    state.current_supply.write(10);
+
+    state._increase_circulating_supply();
+
+    let amount = state._circulating_supply();
+    assert_eq!(amount, 11);
+}
+#[test]
+fn test__decrease_circulating_supply() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+    state.current_supply.write(10);
+
+    state._decrease_circulating_supply();
+
+    let amount = state.current_supply.read();
+    assert_eq!(amount, 9);
+}
+
+#[test]
+fn test__total_tickets_emitted() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+    state.total_supply.write(10);
+
+    let amount = state._total_tickets_emitted();
+    assert_eq!(amount, 10);
+}
+#[test]
+fn test__increase_total_tickets_emitted() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+    state.total_supply.write(10);
+
+    state._increase_total_tickets_emitted();
+
+    let amount = state._total_tickets_emitted();
+    assert_eq!(amount, 11);
+}
+
 
 
 
@@ -104,9 +154,10 @@ fn test_constructor() {
     assert_eq!(dispatcher.ticket_value(), TEN_WITH_6_DECIMALS);
 
     // Check `current_supply` is correct
+    assert_eq!(dispatcher.circulating_supply(), 0);
+
     // Check `total_supply` is correct
-
-
+    assert_eq!(dispatcher.total_tickets_emitted(), 0);
 }
 
 

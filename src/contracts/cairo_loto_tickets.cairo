@@ -4,13 +4,8 @@ use starknet::ContractAddress;
 pub trait ICairoLotoTickets<TContractState> {
     fn underlying_erc20_asset(self: @TContractState) -> ContractAddress;
     fn ticket_value(self: @TContractState) -> u256;
-
-    // fn circulating_supply(self: @TContractState) -> u256;
-    // fn total_tickets_emitted(self: @TContractState) -> u256;
-    
-    // fn set_that(ref self: TContractState, name: felt252, );
-    // fn set_that(ref self: TContractState, name: felt252, );
-    // fn set_that(ref self: TContractState, name: felt252, );
+    fn circulating_supply(self: @TContractState) -> u256;
+    fn total_tickets_emitted(self: @TContractState) -> u256;
 }
 
 
@@ -22,8 +17,8 @@ mod CairoLotoTickets {
     struct Storage {
         underlying_asset: ContractAddress,
         value: u256,
-        // current_supply: u256,
-        // total_supply: u256,
+        current_supply: u256,
+        total_supply: u256,
     }
 
 
@@ -38,24 +33,18 @@ mod CairoLotoTickets {
     //
     #[abi(embed_v0)]
     impl CairoLotoTicketsImpl of super::ICairoLotoTickets<ContractState> {
-        // Getters
         fn underlying_erc20_asset(self: @ContractState) -> ContractAddress {
             self._underlying_erc20_asset()
         }
-
-        //TODO: Test this
         fn ticket_value(self: @ContractState) -> u256 {
             self._ticket_value()
         }
-        // fn circulating_supply(self: @ContractState) -> u256 {
-
-        // }
-        // fn total_tickets_emitted(self: @ContractState) -> u256 {
-
-        // }
-
-        // Setters
-        // (none required)
+        fn circulating_supply(self: @ContractState) -> u256 {
+            self._circulating_supply()
+        }
+        fn total_tickets_emitted(self: @ContractState) -> u256 {
+            self._total_tickets_emitted()
+        }
     }
 
 
@@ -65,15 +54,10 @@ mod CairoLotoTickets {
     //
     #[generate_trait]
     impl TicketsInternalImpl of TicketsInternalTrait {
-        // TODO: Test current version of the contract, then
-        //! complete below `fn initializer()` with additional
-        //! Storage values to set at contract deployment
         fn initializer(ref self: ContractState, asset: ContractAddress, ticket_value: u256,) {
             self.underlying_asset.write(asset);
             self.value.write(ticket_value);
         }
-
-        // ---------------------------------
 
         fn _underlying_erc20_asset(self: @ContractState) -> ContractAddress {
             let asset: ContractAddress = self.underlying_asset.read();
@@ -81,7 +65,6 @@ mod CairoLotoTickets {
                 bool::False(()) => asset,
                 bool::True(()) => panic_with_felt252('Error = ERC20 backing asset')
             }
-
         }
 
         fn _ticket_value(self: @ContractState) -> u256 {
@@ -92,22 +75,33 @@ mod CairoLotoTickets {
             }
         }
 
-        // ---------------------------------
 
-        // fn _circulating_supply(self: @ContractState) -> u256 {}
+        // Circulating/Current Supply
+        fn _circulating_supply(self: @ContractState) -> u256 {
+            self.current_supply.read()
+        }
 
-        // fn _increase_circulating_supply(ref self: ContractState) {}
-        // fn _decrease_circulating_supply(ref self: ContractState) {}
+        fn _increase_circulating_supply(ref self: ContractState) {
+            //? WHICH VARIANT IS USES THE LEAST AMOUNT OF GAS???
+            self.current_supply.write(self.circulating_supply() + 1); //? variant 1 - using public/external function.
+            // self.current_supply.write(self._circulating_supply() + 1); //? variant 2 - using private method.
+            // self.current_supply.write(self.current_supply.read() + 1); //? variant 3 - using: `self.<storage_value>.read()`.
+        }
 
-        // ---------------------------------
+        fn _decrease_circulating_supply(ref self: ContractState) {
+            self.current_supply.write(self._circulating_supply() - 1); //! variant 2 - using private method.
+        }
 
-        // fn _total_tickets_emitted(self: @ContractState) -> u256 {}
 
-        // fn _increase_total_tickets_emitted(ref self: ContractState) {}
+        // Total Supply / Total tickets emitted
+        fn _total_tickets_emitted(self: @ContractState) -> u256 {
+            self.total_supply.read()
+        }
+
+        fn _increase_total_tickets_emitted(ref self: ContractState) {
+            self.total_supply.write(self.total_supply.read() + 1); //! variant 3 - using: `self.<storage_value>.read()`.
+        }
     }
-
-
-
 
 }
 
