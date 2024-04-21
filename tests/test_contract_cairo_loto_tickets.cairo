@@ -35,6 +35,12 @@ fn deploy_with_salt(
 fn ERC20_Asset() -> ContractAddress {
     contract_address_const::<'ERC20_Asset'>()
 }
+
+// fn ten_with_6_decimals() -> u256 {
+//     10_u256
+// }
+const TEN_WITH_6_DECIMALS: u256 = 10000000;
+
 // ----------------------------------------------------------------
 
 
@@ -43,23 +49,34 @@ fn ERC20_Asset() -> ContractAddress {
 #[test]
 fn test_initializer() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
-
-    state.initializer(ERC20_Asset());
+    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state._underlying_erc20_asset();
-    assert_eq!(addrs, ERC20_Asset())
+    assert_eq!(addrs, ERC20_Asset());
+
+    let amount = state._ticket_value();
+    assert_eq!(amount, TEN_WITH_6_DECIMALS);
 }
 
 #[test]
 fn test__underlying_erc20_asset() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset());
+    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state._underlying_erc20_asset();
     assert_eq!(addrs, ERC20_Asset())
 }
 
+#[test]
+fn test__ticket_value() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+
+    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+
+    let amount = state._ticket_value();
+    assert_eq!(amount, TEN_WITH_6_DECIMALS);
+}
 
 
 
@@ -74,6 +91,7 @@ fn test_constructor() {
     //? OZ's "setup_dispatcher_with_event()"
     let mut calldata = array![];
     calldata.append_serde(ERC20_Asset());
+    calldata.append_serde(TEN_WITH_6_DECIMALS);
 
     let address = deploy(CairoLotoTickets::TEST_CLASS_HASH, calldata);
     let dispatcher = ICairoLotoTicketsDispatcher { contract_address: address};
@@ -81,6 +99,13 @@ fn test_constructor() {
 
     // Check `underlying_asset` is correct
     assert_eq!(dispatcher.underlying_erc20_asset(), ERC20_Asset());
+
+    // Check ticket's `value` is correct
+    assert_eq!(dispatcher.ticket_value(), TEN_WITH_6_DECIMALS);
+
+    // Check `current_supply` is correct
+    // Check `total_supply` is correct
+
 
 }
 
@@ -93,8 +118,18 @@ fn test_constructor() {
 fn test_underlying_erc20_asset() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset());
+    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state.underlying_erc20_asset();
     assert_eq!(addrs, ERC20_Asset())
+}
+
+#[test]
+fn test_ticket_value() {
+    let mut state = CairoLotoTickets::contract_state_for_testing();
+
+    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+
+    let amount = state.ticket_value();
+    assert_eq!(amount, TEN_WITH_6_DECIMALS);
 }
