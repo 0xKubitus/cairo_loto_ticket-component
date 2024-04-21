@@ -1,9 +1,13 @@
-use poc_tickets_component::contracts::cairo_loto_tickets::{CairoLotoTickets, ICairoLotoTickets, ICairoLotoTicketsDispatcher, ICairoLotoTicketsDispatcherTrait};
-use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::{TicketsInternalImpl, TicketsInternalTrait,};
-use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::__member_module_total_supply::InternalContractMemberStateTrait as total;
-use poc_tickets_component::contracts::cairo_loto_tickets::CairoLotoTickets::__member_module_current_supply::InternalContractMemberStateTrait as circ;
+use poc_tickets_component::contracts::cairo_loto_ticket::{
+    CairoLotoTickets, ICairoLotoTickets, ICairoLotoTicketsDispatcher,
+    ICairoLotoTicketsDispatcherTrait
+};
+use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::{
+    TicketsInternalImpl, TicketsInternalTrait,
+};
+use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::__member_module_total_supply::InternalContractMemberStateTrait as total;
+use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::__member_module_current_supply::InternalContractMemberStateTrait as circ;
 use starknet::{ContractAddress, contract_address_const, deploy_syscall, SyscallResultTrait,};
-
 
 
 // ----------------------------------------------------------------
@@ -44,8 +48,6 @@ fn ERC20_Asset() -> ContractAddress {
 const TEN_WITH_6_DECIMALS: u256 = 10000000;
 
 // ----------------------------------------------------------------
-
-
 
 //TODO: Test Internal functions:
 #[test]
@@ -129,9 +131,6 @@ fn test__increase_total_tickets_emitted() {
 }
 
 
-
-
-
 //TODO: Test the constructor function:
 #[test]
 fn test_constructor() {
@@ -144,7 +143,7 @@ fn test_constructor() {
     calldata.append_serde(TEN_WITH_6_DECIMALS);
 
     let address = deploy(CairoLotoTickets::TEST_CLASS_HASH, calldata);
-    let dispatcher = ICairoLotoTicketsDispatcher { contract_address: address};
+    let dispatcher = ICairoLotoTicketsDispatcher { contract_address: address };
     // ----------------------------------------------------------------
 
     // Check `underlying_asset` is correct
@@ -159,9 +158,6 @@ fn test_constructor() {
     // Check `total_supply` is correct
     assert_eq!(dispatcher.total_tickets_emitted(), 0);
 }
-
-
-
 
 
 //TODO: Test External functions:

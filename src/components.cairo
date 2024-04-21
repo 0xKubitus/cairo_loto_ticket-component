@@ -1,1 +1,1 @@
-mod cairo_loto_tickets;
+mod cairo_loto_ticket;

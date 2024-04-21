@@ -48,7 +48,6 @@ mod CairoLotoTickets {
     }
 
 
-
     //
     // Internal/Private functions
     //
@@ -70,8 +69,8 @@ mod CairoLotoTickets {
         fn _ticket_value(self: @ContractState) -> u256 {
             let amount: u256 = self.value.read();
             match amount < 1 {
-               bool::False(()) => amount,
-               bool::True(()) => panic_with_felt252('Ticket value cannot be 0')
+                bool::False(()) => amount,
+                bool::True(()) => panic_with_felt252('Ticket value cannot be 0')
             }
         }
 
@@ -83,13 +82,19 @@ mod CairoLotoTickets {
 
         fn _increase_circulating_supply(ref self: ContractState) {
             //? WHICH VARIANT IS USES THE LEAST AMOUNT OF GAS???
-            self.current_supply.write(self.circulating_supply() + 1); //? variant 1 - using public/external function.
-            // self.current_supply.write(self._circulating_supply() + 1); //? variant 2 - using private method.
-            // self.current_supply.write(self.current_supply.read() + 1); //? variant 3 - using: `self.<storage_value>.read()`.
+            self
+                .current_supply
+                .write(
+                    self.circulating_supply() + 1
+                ); //? variant 1 - using public/external function.
+        // self.current_supply.write(self._circulating_supply() + 1); //? variant 2 - using private method.
+        // self.current_supply.write(self.current_supply.read() + 1); //? variant 3 - using: `self.<storage_value>.read()`.
         }
 
         fn _decrease_circulating_supply(ref self: ContractState) {
-            self.current_supply.write(self._circulating_supply() - 1); //! variant 2 - using private method.
+            self
+                .current_supply
+                .write(self._circulating_supply() - 1); //! variant 2 - using private method.
         }
 
 
@@ -99,16 +104,19 @@ mod CairoLotoTickets {
         }
 
         fn _increase_total_tickets_emitted(ref self: ContractState) {
-            self.total_supply.write(self.total_supply.read() + 1); //! variant 3 - using: `self.<storage_value>.read()`.
+            self
+                .total_supply
+                .write(
+                    self.total_supply.read() + 1
+                ); //! variant 3 - using: `self.<storage_value>.read()`.
         }
     }
-
 }
-
-
 // NOTES:
 // 1 -> No setter methods (neither internal nor external) for both 'underlying_asset' and 'ticket_value'
 //      because these should not evolve once set by the `initializer()` function.
 
 // 2 -> No external setter functions for "circulating_supply" nor "total_tickets_sold"
 //      because these values should only evolve when tickets are either minted or burnt.
+
+
