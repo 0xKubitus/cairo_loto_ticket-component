@@ -27,7 +27,7 @@ pub mod CairoLotoTicketComponent {
     //
     // External/Public functions
     //
-    #[embeddable_as(Ticket)]
+    #[embeddable_as(TicketExternals)]
     impl CairoLotoTicketImpl<
         TContractState, +HasComponent<TContractState>
     // > of super::ICairoLotoTicket<ComponentState<TContractState>> {
@@ -51,9 +51,9 @@ pub mod CairoLotoTicketComponent {
     // Internal/Private functions
     //
     #[generate_trait]
-    pub impl TicketsInternalImpl<
+    impl TicketInternalImpl<
         TContractState, +HasComponent<TContractState>
-    > of TicketsInternalTrait<TContractState> {
+    > of TicketInternalTrait<TContractState> {
         fn initializer(
             ref self: ComponentState<TContractState>, asset: ContractAddress, ticket_value: u256,
         ) {

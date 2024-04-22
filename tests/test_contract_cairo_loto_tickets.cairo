@@ -38,8 +38,8 @@ fn deploy_with_salt(
     address
 }
 
-fn ERC20_Asset() -> ContractAddress {
-    contract_address_const::<'ERC20_Asset'>()
+fn fake_ERC20_asset() -> ContractAddress {
+    contract_address_const::<'fake_ERC20_asset'>()
 }
 
 // fn ten_with_6_decimals() -> u256 {
@@ -53,10 +53,10 @@ const TEN_WITH_6_DECIMALS: u256 = 10000000;
 #[test]
 fn test_initializer() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
-    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+    state.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state._underlying_erc20_asset();
-    assert_eq!(addrs, ERC20_Asset());
+    assert_eq!(addrs, fake_ERC20_asset());
 
     let amount = state._ticket_value();
     assert_eq!(amount, TEN_WITH_6_DECIMALS);
@@ -66,17 +66,17 @@ fn test_initializer() {
 fn test__underlying_erc20_asset() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+    state.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state._underlying_erc20_asset();
-    assert_eq!(addrs, ERC20_Asset())
+    assert_eq!(addrs, fake_ERC20_asset())
 }
 
 #[test]
 fn test__ticket_value() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+    state.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
 
     let amount = state._ticket_value();
     assert_eq!(amount, TEN_WITH_6_DECIMALS);
@@ -139,7 +139,7 @@ fn test_constructor() {
     //? to create a setup like 
     //? OZ's "setup_dispatcher_with_event()"
     let mut calldata = array![];
-    calldata.append_serde(ERC20_Asset());
+    calldata.append_serde(fake_ERC20_asset());
     calldata.append_serde(TEN_WITH_6_DECIMALS);
 
     let address = deploy(CairoLotoTickets::TEST_CLASS_HASH, calldata);
@@ -147,7 +147,7 @@ fn test_constructor() {
     // ----------------------------------------------------------------
 
     // Check `underlying_asset` is correct
-    assert_eq!(dispatcher.underlying_erc20_asset(), ERC20_Asset());
+    assert_eq!(dispatcher.underlying_erc20_asset(), fake_ERC20_asset());
 
     // Check ticket's `value` is correct
     assert_eq!(dispatcher.ticket_value(), TEN_WITH_6_DECIMALS);
@@ -165,17 +165,17 @@ fn test_constructor() {
 fn test_underlying_erc20_asset() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+    state.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
 
     let addrs = state.underlying_erc20_asset();
-    assert_eq!(addrs, ERC20_Asset())
+    assert_eq!(addrs, fake_ERC20_asset())
 }
 
 #[test]
 fn test_ticket_value() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
 
-    state.initializer(ERC20_Asset(), TEN_WITH_6_DECIMALS);
+    state.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
 
     let amount = state.ticket_value();
     assert_eq!(amount, TEN_WITH_6_DECIMALS);
