@@ -1,58 +1,80 @@
-// TODO: Test the component functionality via deployment of the Mock contract.
+// TODO: Test the component's external/public functions via deployment of the Mock contract.
+//! (This method does not seem to support testing of internal/public functions)
 
 use poc_tickets_component::utils::mocks::ticket_mock::CairoLotoTicketMock;
 use poc_tickets_component::interfaces::cairo_loto_ticket::ICairoLotoTicket;
 use poc_tickets_component::interfaces::cairo_loto_ticket::{ICairoLotoTicketDispatcher, ICairoLotoTicketDispatcherTrait,};
-use poc_tickets_component::utils::constants::{TEN_WITH_6_DECIMALS, fake_ERC20_asset,};
+use poc_tickets_component::utils::constants::{TEN_WITH_6_DECIMALS, ETH_ADDRS, OWNER, fake_ERC20_asset,};
+use poc_tickets_component::utils;
+use poc_tickets_component::utils::{SerializedAppend,};
 use starknet::{ContractAddress, SyscallResultTrait,};
-// use poc_tickets_component::utils;
-// use poc_tickets_component::utils::{deploy,};
-// use poc_tickets_component::utils::{SerializedAppend,};
+use starknet::testing;
+
 
 // use poc_tickets_component::interfaces::cairo_loto_ticket;
 // // use poc_tickets_component::interfaces::cairo_loto_ticket::{ICairoLotoTicket, ICairoLotoTicketDispatcher, ICairoLotoTicketDispatcherTrait,};
-// use starknet::{ContractAddress, contract_address_const, deploy_syscall, SyscallResultTrait,};
+// use starknet::{contract_address_const, deploy_syscall,};
+
+
+
 
 // #############################################################################
-fn setup_ticket() -> ICairoLotoTicketDispatcher {
-    let (address, _) = starknet::deploy_syscall(
-        CairoLotoTicketMock::TEST_CLASS_HASH.try_into().unwrap(), 0, array![].span(), false
-    )
-        .unwrap_syscall();
+fn setup_eth_ticket() -> ICairoLotoTicketDispatcher {
+    let mut calldata = array![];
+    calldata.append_serde(ETH_ADDRS());
+
+    testing::set_contract_address(OWNER()); 
+    //? using `set_contract_address` in a test will indicate
+    //? to the test runnerat which address it must lookup for storage…
+    // is this useful in this case, though?
+
+    let address = utils::deploy(CairoLotoTicketMock::TEST_CLASS_HASH, calldata);
+    ICairoLotoTicketDispatcher { contract_address: address }
+}
+fn fake_erc20_ticket_setup() -> ICairoLotoTicketDispatcher {
+    let mut calldata = array![];
+    calldata.append_serde(fake_ERC20_asset());
+
+    testing::set_contract_address(OWNER()); 
+    //? using `set_contract_address` in a test will indicate
+    //? to the test runnerat which address it must lookup for storage…
+    // is this useful in this case, though?
+
+    let address = utils::deploy(CairoLotoTicketMock::TEST_CLASS_HASH, calldata);
     ICairoLotoTicketDispatcher { contract_address: address }
 }
 // #############################################################################
 
 
 
-#[test]
-fn _test_underlying_erc20_asset() {}
-
-#[test]
-fn _ticket_value() {}
-
-// Tests for other internal methods
-// {...}
 
 #[test]
 fn test_initializer() {}
 
 #[test]
 fn test_constructor() {
-    let cairo_loto_tickets = setup_ticket();
+    let ticket_component = fake_erc20_ticket_setup();
 
-    assert_eq!(cairo_loto_tickets.underlying_erc20_asset(), fake_ERC20_asset());
-    assert_eq!(cairo_loto_tickets.ticket_value(), TEN_WITH_6_DECIMALS);
+    assert_eq!(ticket_component.underlying_erc20_asset(), fake_ERC20_asset());
+    assert_eq!(ticket_component.ticket_value(), TEN_WITH_6_DECIMALS);
 }
 
 #[test]
-fn test_underlying_erc20_asset() {}
+fn test_underlying_erc20_asset() {
+    let ticket_component = setup_eth_ticket();
+    assert_eq!(ticket_component.underlying_erc20_asset(), ETH_ADDRS());
+}
 
 #[test]
 fn ticket_value() {}
 
-// Tests for other external functions
-// {...}
+#[test]
+fn circulating_supply() {}
+
+#[test]
+fn total_tickets_emitted() {}
+
+
 
 
 
@@ -60,12 +82,33 @@ fn ticket_value() {}
 
 // -----------------------------------------------------------------------------
 // TODO ALSO: Test the component functionality without deploying the Mock contract.
-// use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicketComponent;
+//! I THINK I AM OBLIGED TO USE THIS IN ORDER TO TEST INTERNAL/PRIVATE METHODS
 
-// type TestingState = CairoLotoTicketComponent::ComponentState<CairoLotoTicketMock::ContractState>;
+// use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket;
+
+// type TestingState = CairoLotoTicket::ComponentState<CairoLotoTicketMock::ContractState>;
 
 // impl TestingStateDefault of Default<TestingState> {
 //     fn default() -> TestingState {
 //         CounterComponent::component_state_for_testing()
 //     }
+
+
+
+
+
+// // use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket::TicketInternalImpl;
+// #[test]
+// fn _test_underlying_erc20_asset() {
+   
+// }
+
+// #[test]
+// fn _ticket_value() {}
+
+// // Tests for other private/internal methods
+// // {...}
+
+
+
 // }

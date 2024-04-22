@@ -9,7 +9,7 @@
 // }
 
 #[starknet::component]
-pub mod CairoLotoTicketComponent {
+pub mod CairoLotoTicket {
     use poc_tickets_component::interfaces::cairo_loto_ticket;
     use poc_tickets_component::interfaces::cairo_loto_ticket::ICairoLotoTicket;
     use starknet::ContractAddress;
