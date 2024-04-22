@@ -84,31 +84,32 @@ fn total_tickets_emitted() {}
 // TODO ALSO: Test the component functionality without deploying the Mock contract.
 //! I THINK I AM OBLIGED TO USE THIS IN ORDER TO TEST INTERNAL/PRIVATE METHODS
 
-// use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket;
+use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket;
 
-// type TestingState = CairoLotoTicket::ComponentState<CairoLotoTicketMock::ContractState>;
+type TestingState = CairoLotoTicket::ComponentState<CairoLotoTicketMock::ContractState>;
 
-// impl TestingStateDefault of Default<TestingState> {
-//     fn default() -> TestingState {
-//         CounterComponent::component_state_for_testing()
-//     }
-
-
-
+impl TestingStateDefault of Default<TestingState> {
+    fn default() -> TestingState {
+        CairoLotoTicket::component_state_for_testing()
+    }
+}
 
 
-// // use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket::TicketInternalImpl;
+use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket::TicketInternalImpl;
+#[test]
+fn test__underlying_erc20_asset() {
+    let mut ticket_cmpnt: TestingState = Default::default();
+
+    ticket_cmpnt.initializer(fake_ERC20_asset(), TEN_WITH_6_DECIMALS);
+
+    assert_eq!(ticket_cmpnt._underlying_erc20_asset(), fake_ERC20_asset());
+}
+
 // #[test]
-// fn _test_underlying_erc20_asset() {
-   
-// }
-
-// #[test]
-// fn _ticket_value() {}
+// fn test__ticket_value() {}
 
 // // Tests for other private/internal methods
 // // {...}
 
 
 
-// }
