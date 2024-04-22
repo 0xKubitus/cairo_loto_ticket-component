@@ -2,9 +2,12 @@
 // MOCK CONTRACT
 #[starknet::contract]
 mod CairoLotoTicketMock {
+    use poc_tickets_component::interfaces::cairo_loto_ticket::ICairoLotoTicket;
+    use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicketComponent;
     use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicketComponent::TicketInternalTrait;
-use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicketComponent;
-    use poc_tickets_component::interfaces::ticket::ICairoLotoTicket;
+    use poc_tickets_component::utils;
+    use poc_tickets_component::utils::constants::{TEN_WITH_6_DECIMALS, fake_ERC20_asset,};
+    use starknet::ContractAddress;
 
     component!(path: CairoLotoTicketComponent, storage: cairo_loto_ticket, event: TicketEvent);
 
@@ -26,7 +29,6 @@ use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicketCompone
 
     #[constructor]
     fn constructor(ref self: ContractState,) {
-        // TODO: create a file to store all 'utils' for testing and import it in test files including this one.
         let underlying_asset: ContractAddress = fake_ERC20_asset(); //? "fake_ERC20_asset()" is already declared, but in another test file... (see above)
         let ticket_value: u256 = TEN_WITH_6_DECIMALS; //? SAME AS ABOVE 
         

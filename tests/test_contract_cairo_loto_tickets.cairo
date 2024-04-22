@@ -7,49 +7,13 @@ use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::{
 };
 use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::__member_module_total_supply::InternalContractMemberStateTrait as total;
 use poc_tickets_component::contracts::cairo_loto_ticket::CairoLotoTickets::__member_module_current_supply::InternalContractMemberStateTrait as circ;
+use poc_tickets_component::utils;
+use poc_tickets_component::utils::{SerializedAppend, deploy,};
+use poc_tickets_component::utils::constants::{TEN_WITH_6_DECIMALS, fake_ERC20_asset,};
 use starknet::{ContractAddress, contract_address_const, deploy_syscall, SyscallResultTrait,};
 
 
-// ----------------------------------------------------------------
-// SETUP / UTILS
 
-trait SerializedAppend<T> {
-    fn append_serde(ref self: Array<felt252>, value: T);
-}
-
-impl SerializedAppendImpl<T, impl TSerde: Serde<T>, impl TDrop: Drop<T>> of SerializedAppend<T> {
-    fn append_serde(ref self: Array<felt252>, value: T) {
-        value.serialize(ref self);
-    }
-}
-
-
-fn deploy(contract_class_hash: felt252, calldata: Array<felt252>) -> ContractAddress {
-    deploy_with_salt(contract_class_hash, calldata, 0)
-}
-
-fn deploy_with_salt(
-    contract_class_hash: felt252, calldata: Array<felt252>, salt: felt252
-) -> ContractAddress {
-    let (address, _) = starknet::deploy_syscall(
-        contract_class_hash.try_into().unwrap(), salt, calldata.span(), false
-    )
-        .unwrap_syscall();
-    address
-}
-
-fn fake_ERC20_asset() -> ContractAddress {
-    contract_address_const::<'fake_ERC20_asset'>()
-}
-
-// fn ten_with_6_decimals() -> u256 {
-//     10_u256
-// }
-const TEN_WITH_6_DECIMALS: u256 = 10000000;
-
-// ----------------------------------------------------------------
-
-//TODO: Test Internal functions:
 #[test]
 fn test_initializer() {
     let mut state = CairoLotoTickets::contract_state_for_testing();
@@ -131,7 +95,6 @@ fn test__increase_total_tickets_emitted() {
 }
 
 
-//TODO: Test the constructor function:
 #[test]
 fn test_constructor() {
     // ----------------------------------------------------------------
@@ -160,7 +123,6 @@ fn test_constructor() {
 }
 
 
-//TODO: Test External functions:
 #[test]
 fn test_underlying_erc20_asset() {
     let mut state = CairoLotoTickets::contract_state_for_testing();

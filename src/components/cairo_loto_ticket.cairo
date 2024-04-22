@@ -10,8 +10,8 @@
 
 #[starknet::component]
 pub mod CairoLotoTicketComponent {
-    use poc_tickets_component::interfaces::ticket;
-    use poc_tickets_component::interfaces::ticket::ICairoLotoTicket;
+    use poc_tickets_component::interfaces::cairo_loto_ticket;
+    use poc_tickets_component::interfaces::cairo_loto_ticket::ICairoLotoTicket;
     use starknet::ContractAddress;
     // use starknet::get_caller_address;
 
