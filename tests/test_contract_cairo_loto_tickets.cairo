@@ -13,7 +13,6 @@ use poc_tickets_component::utils::constants::{TEN_WITH_6_DECIMALS, fake_ERC20_as
 use starknet::{ContractAddress, contract_address_const, deploy_syscall, SyscallResultTrait,};
 
 
-
 #[test]
 fn test_initializer() {
     let mut state = CairoLotoTickets::contract_state_for_testing();

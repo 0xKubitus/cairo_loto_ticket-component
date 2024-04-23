@@ -79,8 +79,8 @@ pub mod CairoLotoTicket {
             self
                 .current_supply
                 .write(self._circulating_supply() + 1); //? variant 2 - using private method.
-            // self.current_supply.write(self.current_supply.read() + 1); //? variant 3 - using: `self.<storage_value>.read()`.
-            //? WHICH VARIANT IS USING THE LEAST AMOUNT OF GAS???
+        // self.current_supply.write(self.current_supply.read() + 1); //? variant 3 - using: `self.<storage_value>.read()`.
+        //? WHICH VARIANT IS USING THE LEAST AMOUNT OF GAS???
         }
 
         fn _decrease_circulating_supply(ref self: ComponentState<TContractState>) {

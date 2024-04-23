@@ -31,8 +31,8 @@ pub mod CairoLotoTicketMock {
     #[constructor]
     fn constructor(ref self: ContractState, underlying_asset: ContractAddress,) {
         // let asset: ContractAddress = fake_ERC20_asset();
-        let ticket_value: u256 = TEN_WITH_6_DECIMALS; 
-        
+        let ticket_value: u256 = TEN_WITH_6_DECIMALS;
+
         self.cairo_loto_ticket.initializer(underlying_asset, ticket_value);
 
         self.cairo_loto_ticket.current_supply.write(1); // only needed for testing
