@@ -34,6 +34,9 @@ pub mod CairoLotoTicketMock {
         let ticket_value: u256 = TEN_WITH_6_DECIMALS; 
         
         self.cairo_loto_ticket.initializer(underlying_asset, ticket_value);
+
+        self.cairo_loto_ticket.current_supply.write(1); // only needed for testing
+        self.cairo_loto_ticket.total_supply.write(3); // only needed for testing
     }
 
 

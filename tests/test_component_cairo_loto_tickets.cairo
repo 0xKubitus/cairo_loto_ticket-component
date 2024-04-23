@@ -47,10 +47,9 @@ fn fake_erc20_ticket_setup() -> ICairoLotoTicketDispatcher {
 
 
 
-
-#[test]
-fn test_initializer() {}
-
+//
+// EXTERNAL/PUBLIC FUNCTIONS
+//
 #[test]
 fn test_constructor() {
     let ticket_component = fake_erc20_ticket_setup();
@@ -66,13 +65,22 @@ fn test_underlying_erc20_asset() {
 }
 
 #[test]
-fn ticket_value() {}
+fn ticket_value() {
+    let ticket_component = setup_eth_ticket();
+    assert_eq!(ticket_component.ticket_value(), TEN_WITH_6_DECIMALS);
+}
 
 #[test]
-fn circulating_supply() {}
+fn circulating_supply() {
+    let ticket_component = setup_eth_ticket();
+    assert_eq!(ticket_component.circulating_supply(), 1);
+}
 
 #[test]
-fn total_tickets_emitted() {}
+fn total_tickets_emitted() {
+    let ticket_component = setup_eth_ticket();
+    assert_eq!(ticket_component.total_tickets_emitted(), 3);
+}
 
 
 
@@ -85,6 +93,7 @@ fn total_tickets_emitted() {}
 //! I THINK I AM OBLIGED TO USE THIS IN ORDER TO TEST INTERNAL/PRIVATE METHODS
 
 use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket;
+use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket::TicketInternalImpl;
 
 type TestingState = CairoLotoTicket::ComponentState<CairoLotoTicketMock::ContractState>;
 
@@ -94,8 +103,15 @@ impl TestingStateDefault of Default<TestingState> {
     }
 }
 
+//
+// INTERNAL/PRIVATE METHODS
+//
+#[test]
+fn test_initializer() {
+    
+}
 
-use poc_tickets_component::components::cairo_loto_ticket::CairoLotoTicket::TicketInternalImpl;
+
 #[test]
 fn test__underlying_erc20_asset() {
     let mut ticket_cmpnt: TestingState = Default::default();
@@ -110,6 +126,11 @@ fn test__underlying_erc20_asset() {
 
 // // Tests for other private/internal methods
 // // {...}
+// _circulating_supply
+// _increase_circulating_supply
+// _decrease_circulating_supply
+// _total_tickets_emitted
+// _increase_total_tickets_emitted
 
 
 
